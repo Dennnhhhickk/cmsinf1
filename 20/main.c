@@ -1,25 +1,45 @@
 #include <stdio.h>
 #include <math.h>
 
-#define eps 1e-9
-#define ittr 7000000
-#define step (M_PI / (2 * ittr))
+#define sqr(a) ((a) * (a))
+#define eps 1e-10
+#define ittr 2048
+
+void swap(double *a, double *b)
+{
+    double tmp = *a;
+    *a = *b;
+    *b = tmp;
+}
 
 int main(void)
 {
-    double a, b, x, y;
-    scanf("%lf%lf%lf%lf", &x, &y, &a, &b);
-    for (double i = 0.0; M_PI / 2 - i > eps; i += step)
+    double a, b, c, d;
+    scanf("%lf%lf%lf%lf", &a, &b, &c, &d);
+    if (a < b)
+        swap(&a, &b);
+    if (c < d)
+        swap(&c, &d);
+    if (a >= c) 
     {
-        double tmp1, tmp2;
-        tmp1 = a * sin(i) + cos(i) * b;
-        tmp2 = a * cos(i) + sin(i) * b;
-        if ((tmp1 - x < eps && tmp2 - y < eps) || (tmp2 - x < eps && tmp1 - y < eps))
-        {
-            printf("YES\n");
-            return 0;
-        }
+        if (b >= d) 
+            printf("YES"); 
+        else 
+            printf("NO"); 
+        return 0;
     }
-    printf("NO\n");
+    double l = 0, r = 1, m;
+    for (int i = 0; i < ittr; i++)
+    {
+        m = (l + r) / 2.0;
+        if (sqrt(1 - sqr(m)) * c + m * d <= b)
+            r = m;
+        else
+            l = m;
+    }
+    if (l * c + sqrt(1 - sqr(l)) * d <= a)
+        printf("YES");
+    else
+        printf("NO");
     return 0;
 }
